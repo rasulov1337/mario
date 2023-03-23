@@ -1,13 +1,23 @@
-#include <SFML/Graphics.hpp>
+#include "./Headers/Player.h"
+
+using namespace sf;
+
+#define GAME_NAME "Mario Lite"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    Player mario;
+    RenderWindow window(sf::VideoMode(700, 400), GAME_NAME);
 
+    sf::Clock clock;
     while (window.isOpen())
     {
+        double time = clock.getElapsedTime().asMicroseconds();
+        clock.restart();
+        time = time/500;
+        if (time > 20)
+            time = 20;
+        
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -15,8 +25,16 @@ int main()
                 window.close();
         }
 
-        window.clear();
-        window.draw(shape);
+        if (Keyboard::isKeyPressed(Keyboard::Left))
+            mario.xDirection = -1; 
+       
+	    if (Keyboard::isKeyPressed(Keyboard::Right))
+            mario.xDirection = 1;
+    
+        mario.update(time);
+
+        window.clear(sf::Color::White);
+        window.draw(mario.sprite);
         window.display();
     }
 
