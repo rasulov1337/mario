@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
-set(PROJECT_NAME "MarioLite")
-project(${PROJECT_NAME})
+set(project "MarioLite")
+project(${project})
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -10,21 +10,44 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
+
+set(${project}_HEADERS
+        src/tinyxml2.h
+        src/GameComponent.h
+        src/Collider.h
+        src/RigidBody.h
+        src/Player.h
+        src/Level.h
+        src/Game.h)
+
+
 set(${project}_SOURCES
+        src/GameComponent.cpp
+        src/RigidBody.cpp
+        src/Collider.cpp
+        src/Player.cpp
+        src/tinyxml2.cpp
+        src/Level.cpp
+        src/Game.cpp
         src/Main.cpp
-        src/Source/Player.cpp)
+)
 
 set(${project}_SOURCE_LIST
+        ${${project}_HEADERS}
         ${${project}_SOURCES})
 
-add_executable(${PROJECT_NAME} ${${project}_SOURCE_LIST})
+
+add_executable(${project} ${${project}_SOURCE_LIST})
 
 
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics)
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+target_link_libraries(${project} PRIVATE sfml-graphics)
+target_compile_features(${project} PRIVATE cxx_std_17)
 if (WIN32 AND BUILD_SHARED_LIBS)
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:${PROJECT_NAME}> $<TARGET_FILE_DIR:${PROJECT_NAME}> COMMAND_EXPAND_LISTS)
+    add_custom_command(TARGET ${project} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:${project}> $<TARGET_FILE_DIR:${project}> COMMAND_EXPAND_LISTS)
 endif()
+
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
+
 
 install(TARGETS ${PROJECT_NAME})
