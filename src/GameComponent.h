@@ -11,4 +11,3 @@ public:
 
 	static std::vector<GameComponent*> components_array;
 };
-

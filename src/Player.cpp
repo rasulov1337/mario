@@ -1,15 +1,15 @@
 #include "Player.h"
 
-Player::Player() :
+Player::Player(float jumpHeight) :
+    Entity({ 196, 140, 16, 16 }, 1, 40),
     currentFrame(0),
-    rb({ 196, 140, 16, 16 }, 10),
-    move_speed(10)
+    move_speed(10),
+    _jumpHeight(jumpHeight)
 {
     texture.loadFromFile("assets/mario.png");
     sprite.setTexture(texture);
     sprite.scale(0.5, 0.5);
 }
-
 
 void Player::Update(float dt) {
     dt /= 100;
@@ -21,29 +21,30 @@ void Player::Update(float dt) {
 
     processAnimation();
 
-    sprite.setPosition(rb.rect.left, rb.rect.top);
-    HandleMovement(dt);
-
+    sprite.setPosition(rect.left, rect.top);
 }
 
-void Player::FixedUpdate(float fixed_dt)
+void Player::FixedUpdate(float dt)
 {
-}
-
-void Player::HandleMovement(float dt) {
-    int x = 0;
+    _velocity.x *= 0.4f;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-        x = -1;
+        _velocity.x = -1;
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        x = 1;
-    if (/*rb.is_on_ground &&*/ sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        rb.rect.top -= 10;
-        rb.is_on_ground = false;
+        _velocity.x = 1;
+
+    if (is_on_ground && (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))) {
+        _velocity.y = -sqrtf(2.0f * 981.0f * _jumpHeight);
+        is_on_ground = false;
     }
 
-    rb.rect.left += x * dt * move_speed;
+    if (!is_on_ground)
+        _velocity.y += dt * 981.0f * _mass;
+
+    rect.left += _velocity.x * dt * 100;
+    rect.top += _velocity.y * dt;
 }
+
 
 void Player::processAnimation() {
     //auto& xVelocity = body->GetLinearVelocity().x;

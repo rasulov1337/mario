@@ -1,27 +1,26 @@
-#include <SFML/Graphics.hpp>
-#include "RigidBody.h"
+#include "Entity.h"
 
 using namespace sf;
 
 /// <summary>
 /// Класс игрока
 /// </summary>
-class Player : public GameComponent {
+class Player : public Entity {
 public:
-    explicit Player();
+    explicit Player(float jumpHeight);
 
     void Update(float dt);
-    void FixedUpdate(float fixed_dt);
-    void HandleMovement(float dt);
+    void FixedUpdate(float dt);
 
     sf::Sprite sprite;
-    RigidBody rb;
 
     float move_speed;
 private:
     sf::Texture texture;
 
     double currentFrame;
+    float _jumpHeight;
+
 
     void processAnimation();
 };

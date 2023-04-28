@@ -15,7 +15,7 @@ set(${project}_HEADERS
         src/tinyxml2.h
         src/GameComponent.h
         src/Collider.h
-        src/RigidBody.h
+        src/Entity.h
         src/Player.h
         src/Level.h
         src/Game.h)
@@ -23,7 +23,7 @@ set(${project}_HEADERS
 
 set(${project}_SOURCES
         src/GameComponent.cpp
-        src/RigidBody.cpp
+        src/Entity.cpp
         src/Collider.cpp
         src/Player.cpp
         src/tinyxml2.cpp

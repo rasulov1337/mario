@@ -4,7 +4,7 @@
 Game::Game() :
 	_screen_size(1200, 600),
 	_window(sf::VideoMode(_screen_size.x, _screen_size.y), "Mario Lite"),
-	mario(),
+	mario(40),
 	_view(sf::FloatRect(0.0f, 0.0f, _screen_size.x, _screen_size.y)),
 	_lvl("assets/map.tmx")
 {
@@ -103,7 +103,7 @@ void Game::ProcessPhysics()
 
 	for (int i = 0; i < c.size(); ++i) {
 		for (int j = i + 1; j < c.size(); ++j) {
-			bool is_mario = c[i]->rect == &mario.rb.rect;
+			bool is_mario = c[i]->rect == &mario.rect;
 
 			if (!is_mario)
 				break;
@@ -114,18 +114,22 @@ void Game::ProcessPhysics()
 				continue;
 			}
 
-			mario.rb.rect.left += collisionInfo.x;
-			mario.rb.rect.top += collisionInfo.y;
+			mario.rect.left += collisionInfo.x;
+			mario.rect.top += collisionInfo.y;
+
+			if (collisionInfo.y < 0) {
+				mario.is_on_ground = true;
+			}
 		}
 	}
 }
 
 void Game::Render() {
-	float view_left_border = mario.rb.rect.left + _screen_size.x / 4;
-	if (mario.rb.rect.left < _screen_size.x / 4)
+	float view_left_border = mario.rect.left + _screen_size.x / 4;
+	if (mario.rect.left < _screen_size.x / 4)
 		view_left_border = _screen_size.x / 2;
-	float view_top_border = mario.rb.rect.top + _screen_size.y / 4;
-	if (mario.rb.rect.top < _screen_size.y / 4)
+	float view_top_border = mario.rect.top + _screen_size.y / 4;
+	if (mario.rect.top < _screen_size.y / 4)
 		view_top_border = _screen_size.y / 2;
 	_view.setCenter(view_left_border, view_top_border);
 	_window.setView(_view);
