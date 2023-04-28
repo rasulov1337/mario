@@ -10,8 +10,9 @@ class Player : public GameComponent {
 public:
     explicit Player();
 
-    void Update(double dt);
-    void HandleMovement(double dt);
+    void Update(float dt);
+    void FixedUpdate(float fixed_dt);
+    void HandleMovement(float dt);
 
     sf::Sprite sprite;
     RigidBody rb;
@@ -23,5 +24,4 @@ private:
     double currentFrame;
 
     void processAnimation();
-
 };

@@ -14,9 +14,16 @@ class Game {
 	void Update();
 	void ProcessPhysics();
 	void Render();
+
+	// Debug
+	void InitDebug();
+	void DrawColliders();
+	std::vector<RectangleShape> _rect_shapes;
 public:
 	explicit Game();
 	int Run();
 
 	Player mario;
+
+
 };

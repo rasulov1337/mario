@@ -1,7 +1,4 @@
 #include "Game.h"
-#include "tinyxml2.h"
-
-using namespace tinyxml2;
 
 
 Game::Game() :
@@ -11,6 +8,8 @@ Game::Game() :
 	_view(sf::FloatRect(0.0f, 0.0f, _screen_size.x, _screen_size.y)),
 	_lvl("assets/map.tmx")
 {
+	// HACK: FOR CORRECT PHYSICS FIRST INIT CREATURES THAN GROUND AND OTHERS
+
 	// Далее создаются физические объекты типа Ground, но это надо сделать получше! TODO!
 	std::vector<Object> block = _lvl.GetObjects("Ground");
 	for (int i = 0; i < block.size(); i++)
@@ -26,6 +25,10 @@ Game::Game() :
 	
 
 	_view.setViewport(sf::FloatRect(0.0f, 0.0f, 2.0f, 2.0f));
+
+#ifdef _DEBUG
+	InitDebug();
+#endif
 }
 
 
@@ -39,6 +42,30 @@ int Game::Run() {
 	}
 
 	return 0;
+}
+
+void Game::InitDebug() {
+	for (auto& i : Collider::colliders) {
+		sf::RectangleShape rs;
+		rs.setPosition(i->rect->getPosition());
+		rs.setSize(i->rect->getSize());
+		rs.setFillColor(sf::Color(0, 0, 0, 0));
+		rs.setOutlineColor(sf::Color(255, 255, 0));
+		rs.setOutlineThickness(1);
+		_rect_shapes.push_back(rs);
+	}
+}
+
+void Game::DrawColliders()
+{
+	auto rs = _rect_shapes.begin();
+	auto col = Collider::colliders.begin();
+		
+	for (; rs != _rect_shapes.end(); ++rs, ++col) {
+		rs->setPosition((*col)->rect->getPosition());
+		rs->setSize((*col)->rect->getSize());
+		_window.draw(*rs);
+	}
 }
 
 void Game::ProcessEvents()
@@ -74,29 +101,23 @@ void Game::ProcessPhysics()
 {
 	auto& c = Collider::colliders;  // Just an alias
 
-	for (int i = 0; i < c.size(); ++i)
+	for (int i = 0; i < c.size(); ++i) {
 		for (int j = i + 1; j < c.size(); ++j) {
-			
-			// If something is ontop of something
-			if (((c[i]->rect->top + c[i]->rect->height) >= c[j]->rect->top)
-				&& ((c[i]->rect->top + c[i]->rect->height) <= c[j]->rect->top + c[j]->rect->height)
-				&& (c[i]->rect->left >= c[j]->rect->left)
-				&& ((c[i]->rect->left + c[i]->rect->width) <= (c[j]->rect->left + c[j]->rect->width))) {
-				if (c[i]->rect == &mario.rb.rect) {
-					mario.rb.is_on_ground = true;
-				}
+			bool is_mario = c[i]->rect == &mario.rb.rect;
+
+			if (!is_mario)
+				break;
+
+			sf::Vector2f collisionInfo = c[i]->CheckCollision(*c[j]);
+
+			if (!collisionInfo.x && !collisionInfo.y) {
+				continue;
 			}
 
-			// If something hits something
-			if (((c[i]->rect->left + c[i]->rect->width) >= c[j]->rect->left)
-				&& ((c[i]->rect->left + c[i]->rect->width) <= c[j]->rect->left + c[j]->rect->width)
-				&& (c[i]->rect->top >= c[j]->rect->top)
-				&& ((c[i]->rect->top + c[i]->rect->height) <= (c[j]->rect->top + c[j]->rect->height))) {
-				if (c[i]->rect == &mario.rb.rect) {
-					mario.rb.rect = sf::FloatRect(c[j]->rect->left - mario.rb.rect.width, mario.rb.rect.top, mario.rb.rect.width, mario.rb.rect.height);
-				}
-			}
+			mario.rb.rect.left += collisionInfo.x;
+			mario.rb.rect.top += collisionInfo.y;
 		}
+	}
 }
 
 void Game::Render() {
@@ -113,5 +134,10 @@ void Game::Render() {
 
 	_lvl.Draw(_window);
 	_window.draw(mario.sprite);
+
+#ifdef _DEBUG
+	DrawColliders();
+#endif
+
 	_window.display();
 }
