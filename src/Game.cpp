@@ -5,9 +5,10 @@ Game::Game() :
 	_screen_size(1200, 600),
 	_window(sf::VideoMode(_screen_size.x, _screen_size.y), "Mario Lite"),
 	mario(40),
-	_view(sf::FloatRect(0.0f, 0.0f, _screen_size.x, _screen_size.y)),
-	_lvl("assets/map.tmx")
+	_view(sf::FloatRect(0.0f, 0.0f, _screen_size.x, _screen_size.y))
 {
+
+	_lvl.LoadFromFile("assets/map.tmx");
 	// HACK: FOR CORRECT PHYSICS FIRST INIT CREATURES THAN GROUND AND OTHERS
 
 	// Далее создаются физические объекты типа Ground, но это надо сделать получше! TODO!

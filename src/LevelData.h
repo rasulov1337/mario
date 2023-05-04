@@ -28,15 +28,15 @@ struct Layer
     std::vector<sf::Sprite> tiles;
 };
 
-class Level
+class LevelData
 {
 public:
-    Level(const char* filename);
     bool LoadFromFile(const char* filename);
     Object GetObject(std::string name);
     std::vector<Object> GetObjects(std::string name);
     void Draw(sf::RenderWindow& window);
     sf::Vector2i GetTileSize();
+    sf::Sprite GetTile(int id);
 
 private:
     int width, height, tileWidth, tileHeight;
@@ -45,6 +45,9 @@ private:
     sf::Texture tilesetImage;
     std::vector<Object> objects;
     std::vector<Layer> layers;
+
+    std::map<int, sf::Rect<int>> subRects;
+
 };
 
 #endif

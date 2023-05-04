@@ -1,4 +1,4 @@
-#include "Level.h"
+#include "LevelData.h"
 
 #include <iostream>
 #include "tinyxml2.h"
@@ -21,7 +21,7 @@ std::string Object::GetPropertyString(std::string name)
 }
 
 
- Level::Level(const char* filename) {
+ bool LevelData::LoadFromFile(const char* filename) {
     XMLDocument levelFile;
 
     int errorCode = levelFile.LoadFile(filename);
@@ -42,8 +42,8 @@ std::string Object::GetPropertyString(std::string name)
     firstTileID = atoi(tilesetElement->Attribute("firstgid"));
 
     // source - путь до картинки в контейнере image
-    XMLElement* image = tilesetElement->FirstChildElement("image");
-    std::string imagepath = "assets/" +std::string(image->Attribute("source"));
+    XMLElement* tilesetImageElement = tilesetElement->FirstChildElement("image");
+    std::string imagepath = "assets/" + std::string(tilesetImageElement->Attribute("source"));
 
     // Пытаемся загрузить тайлсет
     sf::Image img;
@@ -59,19 +59,14 @@ std::string Object::GetPropertyString(std::string name)
     tilesetImage.setSmooth(false);
 
     // Получаем количество столбцов и строк тайлсета
-    int columns = tilesetImage.getSize().x / tileWidth;
-    int rows = tilesetImage.getSize().y / tileHeight;
+    int columns = atoi(tilesetElement->Attribute("columns"));
+    int rows = atoi(tilesetImageElement->Attribute("height")) / (atoi(tilesetElement->Attribute("tileheight")) / atoi(tilesetElement->Attribute("margin")));
+    int tileCount = atoi(tilesetElement->Attribute("tilecount"));
 
-    // КОСТЫЛИ, БОЖЕ МОЙ
-    // Я НА ЭТО УБИЛ СВОЙ ЦЕЛЫЙ ДЕНЬ, А ЕЩЕ КУЧА ДЕЛ ВПЕРЕДИ
-    columns = 33;
-    rows = 28;
 
     // Вектор из прямоугольников изображений (TextureRect)
-    std::map<int, sf::Rect<int>> subRects;
-    //std::vector<sf::Rect<int>> subRects;
+    std::vector<sf::Rect<int>> subRects;
 
-    int id = 0;
     for (int y = 0; y < rows; y++)
         for (int x = 0; x < columns; x++)
         {
@@ -82,11 +77,7 @@ std::string Object::GetPropertyString(std::string name)
             rect.left = x * tileWidth + (x + 1) * 2 - 1;
             rect.width = tileWidth;
 
-            //std::cout << "ID=" << id << "(" << rect.left << "; " << rect.top << ")\n";
-
-            //subRects.push_back(rect);
-            subRects[id] = rect;
-            ++id;
+            subRects.push_back(rect);
         }
 
     // Работа со слоями
@@ -164,6 +155,7 @@ std::string Object::GetPropertyString(std::string name)
 
         layerElement = layerElement->NextSiblingElement("layer");
     }
+
     // Работа с объектами
     XMLElement* objectGroupElement;
     // Если есть слои объектов
@@ -246,11 +238,11 @@ std::string Object::GetPropertyString(std::string name)
     {
         std::cout << "No object layers found..." << std::endl;
     }
+    return true;
 }
 
 
-
-Object Level::GetObject(std::string name)
+Object LevelData::GetObject(std::string name)
 {
     // Только первый объект с заданным именем
     for (int i = 0; i < objects.size(); i++)
@@ -258,7 +250,7 @@ Object Level::GetObject(std::string name)
             return objects[i];
 }
 
-std::vector<Object> Level::GetObjects(std::string name)
+std::vector<Object> LevelData::GetObjects(std::string name)
 {
     // Все объекты с заданным именем
     std::vector<Object> vec;
@@ -269,12 +261,20 @@ std::vector<Object> Level::GetObjects(std::string name)
     return vec;
 }
 
-sf::Vector2i Level::GetTileSize()
+sf::Vector2i LevelData::GetTileSize()
 {
     return sf::Vector2i(tileWidth, tileHeight);
 }
 
-void Level::Draw(sf::RenderWindow& window)
+sf::Sprite LevelData::GetTile(int id)
+{
+    sf::Sprite res;
+    res.setTexture(tilesetImage);
+    res.setTextureRect(subRects[id]);
+    return res;
+}
+
+void LevelData::Draw(sf::RenderWindow& window)
 {
     // Рисуем все тайлы (объекты НЕ рисуем!)
     for (int layer = 0; layer < layers.size(); layer++)

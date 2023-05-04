@@ -17,7 +17,7 @@ set(${project}_HEADERS
         src/Collider.h
         src/Entity.h
         src/Player.h
-        src/Level.h
+        src/LevelData.h
         src/Game.h)
 
 
@@ -27,7 +27,7 @@ set(${project}_SOURCES
         src/Collider.cpp
         src/Player.cpp
         src/tinyxml2.cpp
-        src/Level.cpp
+        src/LevelData.cpp
         src/Game.cpp
         src/Main.cpp
 )
