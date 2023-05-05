@@ -10,7 +10,7 @@ public:
 	
 	bool is_on_ground;
 	sf::FloatRect rect;
-
+	const Collider& collider();
 protected:
 	Collider _collider;
 	float _mass;

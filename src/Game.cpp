@@ -7,27 +7,14 @@ Game::Game() :
 	mario(40),
 	_view(sf::FloatRect(0.0f, 0.0f, _screen_size.x, _screen_size.y))
 {
-
-	_lvl.LoadFromFile("assets/map.tmx");
-	// HACK: FOR CORRECT PHYSICS FIRST INIT CREATURES THAN GROUND AND OTHERS
-
-	// Далее создаются физические объекты типа Ground, но это надо сделать получше! TODO!
-	std::vector<Object> block = _lvl.GetObjects("Ground");
-	for (int i = 0; i < block.size(); i++)
-	{
-		new Collider(new Rect(block[i].rect));
-	}
-
-
-	auto pipes = _lvl.GetObjects("Pipes");
-	for (int i = 0; i < pipes.size(); ++i) {
-		new Collider(new Rect(pipes[i].rect));
-	}
-	
+	LoadLevel(0);
 
 	_view.setViewport(sf::FloatRect(0.0f, 0.0f, 2.0f, 2.0f));
 
 #ifdef _DEBUG
+	std::cin.tie(0);
+	std::cout.tie(0);
+	std::cout.sync_with_stdio(false);
 	InitDebug();
 #endif
 }
@@ -48,8 +35,8 @@ int Game::Run() {
 void Game::InitDebug() {
 	for (auto& i : Collider::colliders) {
 		sf::RectangleShape rs;
-		rs.setPosition(i->rect->getPosition());
-		rs.setSize(i->rect->getSize());
+		rs.setPosition(i->rect.getPosition());
+		rs.setSize(i->rect.getSize());
 		rs.setFillColor(sf::Color(0, 0, 0, 0));
 		rs.setOutlineColor(sf::Color(255, 255, 0));
 		rs.setOutlineThickness(1);
@@ -61,10 +48,10 @@ void Game::DrawColliders()
 {
 	auto rs = _rect_shapes.begin();
 	auto col = Collider::colliders.begin();
-		
+
 	for (; rs != _rect_shapes.end(); ++rs, ++col) {
-		rs->setPosition((*col)->rect->getPosition());
-		rs->setSize((*col)->rect->getSize());
+		rs->setPosition((*col)->rect.getPosition());
+		rs->setSize((*col)->rect.getSize());
 		_window.draw(*rs);
 	}
 }
@@ -103,25 +90,41 @@ void Game::ProcessPhysics()
 	auto& c = Collider::colliders;  // Just an alias
 
 	for (int i = 0; i < c.size(); ++i) {
-		for (int j = i + 1; j < c.size(); ++j) {
-			bool is_mario = c[i]->rect == &mario.rect;
+		if ((*c[i]) == mario.collider())
+			continue;
 
-			if (!is_mario)
-				break;
+		sf::Vector2f collisionInfo = mario.collider().CheckCollision(*c[i]);
 
-			sf::Vector2f collisionInfo = c[i]->CheckCollision(*c[j]);
-
-			if (!collisionInfo.x && !collisionInfo.y) {
-				continue;
-			}
-
-			mario.rect.left += collisionInfo.x;
-			mario.rect.top += collisionInfo.y;
-
-			if (collisionInfo.y < 0) {
-				mario.is_on_ground = true;
-			}
+		if (!collisionInfo.x && !collisionInfo.y) {
+			continue;
 		}
+
+		mario.rect.left += collisionInfo.x;
+		mario.rect.top += collisionInfo.y;
+
+		// From Bottom
+		if (collisionInfo.y < 0) {
+			mario.is_on_ground = true;
+		}
+
+		// From Top
+		if (collisionInfo.y > 0 && collisionInfo.x == 0) {
+			for (auto j = _bricks.begin(); j != _bricks.end(); ++j) {
+				if (&j->collider == c[i]) {
+					j->OnPlayerHit();
+				}
+			}
+
+			for (auto j = _coins.begin(); j != _coins.end(); ++j) {
+				if (&j->collider == c[i]) {
+					j->OnPlayerHit();
+				}
+			}
+
+		}
+
+		//std::cout << collisionInfo.x << ' ' << collisionInfo.y << '\n';
+		
 	}
 }
 
@@ -138,6 +141,11 @@ void Game::Render() {
 	_window.clear();
 
 	_lvl.Draw(_window);
+
+	for (auto& i : _bricks) {
+		_window.draw(i.sprite);
+	}
+
 	_window.draw(mario.sprite);
 
 #ifdef _DEBUG
@@ -145,4 +153,34 @@ void Game::Render() {
 #endif
 
 	_window.display();
+}
+
+void Game::LoadLevel(int level)
+{
+	_lvl.LoadFromFile("assets/map.tmx");
+	// HACK: FOR CORRECT PHYSICS FIRST INIT CREATURES THAN GROUND AND OTHERS
+
+	// Далее создаются физические объекты типа Ground, но это надо сделать получше! TODO!
+	std::vector<Object> block = _lvl.GetObjects("Ground");
+	for (int i = 0; i < block.size(); ++i) {
+		_staticColliders.push_back(StaticCollider(block[i].rect));
+	}
+
+	auto pipes = _lvl.GetObjects("Pipes");
+	for (int i = 0; i < pipes.size(); ++i) {
+		_staticColliders.push_back(StaticCollider(pipes[i].rect));
+	}
+
+	auto brickObjects = _lvl.GetObjects("Bricks");
+	auto brickSprite = _lvl.GetTile(1);
+	for (auto& i : brickObjects) {
+		brickSprite.setPosition(i.sprite.getPosition());
+		_bricks.push_back({ brickSprite });
+	}
+
+	auto coinObjects = _lvl.GetObjects("Coins");
+	auto coinSprite = sf::Sprite();
+	for (auto& i : coinObjects) {
+		_coins.push_back(Coin(coinSprite, i.rect));
+	}
 }

@@ -65,8 +65,6 @@ std::string Object::GetPropertyString(std::string name)
 
 
     // Вектор из прямоугольников изображений (TextureRect)
-    std::vector<sf::Rect<int>> subRects;
-
     for (int y = 0; y < rows; y++)
         for (int x = 0; x < columns; x++)
         {
@@ -130,9 +128,7 @@ std::string Object::GetPropertyString(std::string name)
             // Устанавливаем TextureRect каждого тайла
             if (subRectToUse >= 0)
             {
-                sf::Sprite sprite;
-                sprite.setTexture(tilesetImage);
-                sprite.setTextureRect(subRects[subRectToUse]);
+                sf::Sprite sprite = GetTile(subRectToUse);
                 sprite.setPosition(x * tileWidth, y * tileHeight);
                 //sprite.setColor(sf::Color(255, 255, 255, layer.opacity));
 

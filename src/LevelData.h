@@ -46,7 +46,7 @@ private:
     std::vector<Object> objects;
     std::vector<Layer> layers;
 
-    std::map<int, sf::Rect<int>> subRects;
+    std::vector<sf::Rect<int>> subRects;
 
 };
 

@@ -15,6 +15,9 @@ set(${project}_HEADERS
         src/tinyxml2.h
         src/GameComponent.h
         src/Collider.h
+        src/StaticCollider.h
+        src/Coin.h
+        src/Brick.h
         src/Entity.h
         src/Player.h
         src/LevelData.h
