@@ -6,6 +6,7 @@
 #include "Brick.h"
 #include "Coin.h"
 #include "StaticCollider.h"
+#include "Goomba.h"
 
 #define FIXED_UPDATE_DELTA_TIME 1.0f/60
 
@@ -26,12 +27,15 @@ class Game {
 	void InitDebug();
 	void DrawColliders();
 	std::vector<RectangleShape> _rect_shapes;
-	std::vector<StaticCollider> _staticColliders;
-	std::vector<Coin> _coins;
-
 
 	// Game Objects
 	std::vector<Brick> _bricks;
+	std::vector<Coin> _coins;
+	std::vector<StaticCollider> _staticColliders;
+
+	// Entities
+	std::vector<Goomba> _goombas;
+	
 
 public:
 	explicit Game();

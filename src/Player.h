@@ -9,15 +9,11 @@ class Player : public Entity {
 public:
     explicit Player(float jumpHeight);
 
-    void Update(float dt);
-    void FixedUpdate(float dt);
-
-    sf::Sprite sprite;
+    void Update(float dt) override;
+    void FixedUpdate(float dt) override;
 
     float move_speed;
 private:
-    sf::Texture texture;
-
     double currentFrame;
     float _jumpHeight;
 

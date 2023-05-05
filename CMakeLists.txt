@@ -19,6 +19,7 @@ set(${project}_HEADERS
         src/Coin.h
         src/Brick.h
         src/Entity.h
+        src/Goomba.h
         src/Player.h
         src/LevelData.h
         src/Game.h)
@@ -28,6 +29,7 @@ set(${project}_SOURCES
         src/GameComponent.cpp
         src/Entity.cpp
         src/Collider.cpp
+        src/Goomba.cpp
         src/Player.cpp
         src/tinyxml2.cpp
         src/LevelData.cpp

@@ -6,8 +6,8 @@ Player::Player(float jumpHeight) :
     move_speed(10),
     _jumpHeight(jumpHeight)
 {
-    texture.loadFromFile("assets/mario.png");
-    sprite.setTexture(texture);
+    _texture.loadFromFile("assets/mario.png");
+    sprite.setTexture(_texture);
     sprite.scale(0.5, 0.5);
 }
 

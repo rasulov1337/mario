@@ -88,42 +88,46 @@ void Game::Update() {
 void Game::ProcessPhysics()
 {
 	auto& c = Collider::colliders;  // Just an alias
+	auto& e = Entity::entities;
 
 	for (int i = 0; i < c.size(); ++i) {
-		if ((*c[i]) == mario.collider())
-			continue;
+		for (int j = 0; j < e.size(); ++j) {
+			if ((*c[i]) == e[j]->collider())
+				continue;
 
-		sf::Vector2f collisionInfo = mario.collider().CheckCollision(*c[i]);
 
-		if (!collisionInfo.x && !collisionInfo.y) {
-			continue;
-		}
+			sf::Vector2f collisionInfo = e[j]->collider().CheckCollision(*c[i]);
 
-		mario.rect.left += collisionInfo.x;
-		mario.rect.top += collisionInfo.y;
-
-		// From Bottom
-		if (collisionInfo.y < 0) {
-			mario.is_on_ground = true;
-		}
-
-		// From Top
-		if (collisionInfo.y > 0 && collisionInfo.x == 0) {
-			for (auto j = _bricks.begin(); j != _bricks.end(); ++j) {
-				if (&j->collider == c[i]) {
-					j->OnPlayerHit();
-				}
+			if (!collisionInfo.x && !collisionInfo.y) {
+				continue;
 			}
 
-			for (auto j = _coins.begin(); j != _coins.end(); ++j) {
-				if (&j->collider == c[i]) {
-					j->OnPlayerHit();
-				}
+			e[j]->rect.left += collisionInfo.x;
+			e[j]->rect.top += collisionInfo.y;
+
+			// From Bottom
+			if (collisionInfo.y < 0) {
+				e[j]->is_on_ground = true;
 			}
 
-		}
+			// From Top
+			if (collisionInfo.y > 0 && collisionInfo.x == 0) {
+				for (auto j = _bricks.begin(); j != _bricks.end(); ++j) {
+					if (&j->collider == c[i]) {
+						j->OnPlayerHit();
+					}
+				}
 
-		//std::cout << collisionInfo.x << ' ' << collisionInfo.y << '\n';
+				for (auto j = _coins.begin(); j != _coins.end(); ++j) {
+					if (&j->collider == c[i]) {
+						j->OnPlayerHit();
+					}
+				}
+
+			}
+
+			//std::cout << collisionInfo.x << ' ' << collisionInfo.y << '\n';
+		}
 		
 	}
 }
@@ -146,7 +150,10 @@ void Game::Render() {
 		_window.draw(i.sprite);
 	}
 
-	_window.draw(mario.sprite);
+	// Entities
+	for (auto& i : Entity::entities) {
+		_window.draw(i->sprite);
+	}
 
 #ifdef _DEBUG
 	DrawColliders();
@@ -182,5 +189,12 @@ void Game::LoadLevel(int level)
 	auto coinSprite = sf::Sprite();
 	for (auto& i : coinObjects) {
 		_coins.push_back(Coin(coinSprite, i.rect));
+	}
+
+
+	// Entities...
+	auto goombasObjects = _lvl.GetObjects("Goombas");
+	for (auto& i : goombasObjects) {
+		_goombas.push_back(Goomba(i.rect.getPosition()));
 	}
 }
