@@ -7,6 +7,7 @@ using namespace sf;
 /// </summary>
 class Player : public Entity {
 public:
+    sf::Texture _animation_textures[7];
     explicit Player(float jumpHeight);
 
     void Update(float dt) override;
@@ -14,6 +15,7 @@ public:
 
     float move_speed;
 private:
+    sf::Texture texture;
     double currentFrame;
     float _jumpHeight;
 
