@@ -1,9 +1,8 @@
 #include "Player.h"
 
 Player::Player(float jumpHeight) :
-    Entity({ 196, 140, 16, 16 }, 1, 40),
+    Entity({ 196, 140, 16, 16 }, 1, 100.0f),
     currentFrame(0),
-    move_speed(10),
     _jumpHeight(jumpHeight)
 {
     sf::Texture textures[7];
@@ -22,27 +21,23 @@ Player::Player(float jumpHeight) :
 }
 
 void Player::Update(float dt) {
-    dt /= 100;
-
-    processAnimation();
+    ProcessAnimation();
 
     sprite.setPosition(rect.left, rect.top);
-}
 
-void Player::FixedUpdate(float dt)
-{
-    _velocity.x *= 0.4f;
+
+    _velocity.x *= 0.9f;
     bool is_moving = false; // флаг для отслеживания движения
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
-        _velocity.x = -1;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        _velocity.x = -_moveSpeed;
         is_moving = true;
     }
-    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
-        _velocity.x = 1;
+    else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        _velocity.x = _moveSpeed;
         is_moving = true;
     }
-    if (!is_moving) { // если клавиша движения была отпущена, остановить Марио
+    if (!is_moving) { // если клавиша движения была отпущена, остановить марио
         _velocity.x = 0;
     }
     if (is_on_ground && (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))) {
@@ -50,15 +45,33 @@ void Player::FixedUpdate(float dt)
         is_on_ground = false;
     }
 
-    if (!is_on_ground)
-        _velocity.y += dt * 981.0f * _mass;
+    _velocity.y += 981.0f * dt;
 
-    rect.left += _velocity.x * dt * 100;
+    rect.left += _velocity.x * dt;
     rect.top += _velocity.y * dt;
 }
 
+void Player::OnCollision(sf::Vector2f direction)
+{
+    if (direction.x < 0.0f)
+        _velocity.x = 0;
+    else if (direction.x > 0.0f)
+        _velocity.x = 0;
 
-void Player::processAnimation() {
+    if (direction.y < 0) {
+        _velocity.y = 0;
+        is_on_ground = true;
+    }
+
+    else if (direction.y > 0) {
+        _velocity.y = 0;
+    }
+
+
+}
+
+
+void Player::ProcessAnimation() {
     if (!is_on_ground) { // Если Марио в воздухе
         if (_velocity.y > 0) { // Если Марио падает вниз
             sprite.setTexture(_animation_textures[5]); // Используйте текстуру анимации падения

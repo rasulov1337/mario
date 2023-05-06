@@ -15,8 +15,10 @@ public:
 
 	bool is_on_ground;
 	sf::FloatRect rect;
-	const Collider& collider();
+	Collider& collider();
 	sf::Sprite sprite;
+
+	virtual void OnCollision(sf::Vector2f direction);
 
 	static std::vector<Entity*> entities;
 

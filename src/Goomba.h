@@ -12,7 +12,6 @@ public:
 	Goomba& operator=(const Goomba& other);
 
 	void Update(float dt) override;
-	void FixedUpdate(float dt) override;
 private:
 
 

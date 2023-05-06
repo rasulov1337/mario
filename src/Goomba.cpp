@@ -29,10 +29,6 @@ Goomba& Goomba::operator=(const Goomba& other)
 
 void Goomba::Update(float dt)
 {
-    sprite.setPosition(rect.left, rect.top);
-}
-
-void Goomba::FixedUpdate(float dt) {
     _velocity.x = -_moveSpeed;
 
     if (!is_on_ground)
@@ -40,4 +36,6 @@ void Goomba::FixedUpdate(float dt) {
 
     rect.left += _velocity.x * dt * 10;
     rect.top += _velocity.y * dt;
+
+    sprite.setPosition(rect.left, rect.top);
 }
