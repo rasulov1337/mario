@@ -11,14 +11,12 @@ public:
     explicit Player(float jumpHeight);
 
     void Update(float dt) override;
-    void FixedUpdate(float dt) override;
-
-    float move_speed;
+    void OnCollision(sf::Vector2f direction) override;
 private:
     sf::Texture texture;
     double currentFrame;
     float _jumpHeight;
 
 
-    void processAnimation();
+    void ProcessAnimation();
 };

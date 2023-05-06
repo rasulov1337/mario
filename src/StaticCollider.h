@@ -5,7 +5,7 @@
 
 class StaticCollider : public Collider {
 public:
-	const sf::FloatRect rect;
+	sf::FloatRect rect;
 
 	explicit StaticCollider(const sf::FloatRect rect_) : rect(rect_), Collider(rect)
 	{

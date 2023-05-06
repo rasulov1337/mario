@@ -8,8 +8,6 @@
 #include "StaticCollider.h"
 #include "Goomba.h"
 
-#define FIXED_UPDATE_DELTA_TIME 1.0f/60
-
 class Game {
 	sf::Vector2f _screen_size;
 	sf::RenderWindow _window;

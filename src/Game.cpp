@@ -4,7 +4,7 @@
 Game::Game() :
 	_screen_size(1200, 600),
 	_window(sf::VideoMode(_screen_size.x, _screen_size.y), "Mario Lite"),
-	mario(40),
+	mario(100.0f),
 	_view(sf::FloatRect(0.0f, 0.0f, _screen_size.x, _screen_size.y))
 {
 	LoadLevel(0);
@@ -58,7 +58,7 @@ void Game::DrawColliders()
 
 void Game::ProcessEvents()
 {
-	sf::Event evt;
+	static sf::Event evt;
 
 	while (_window.pollEvent(evt))
 	{
@@ -74,14 +74,12 @@ void Game::ProcessEvents()
 void Game::Update() {
 	// Firstly, Update()
 	static sf::Clock clock;
-	float dt = clock.restart().asMilliseconds();
+	float dt = clock.restart().asSeconds();
+	if (dt > (1.0f / 60.0f)) {
+		dt = 1.0f / 60.0f;
+	}
 	for (auto& i : GameComponent::components_array) {
 		i->Update(dt);
-	}
-
-	// Secondly, FixedUpdate()
-	for (auto& i : GameComponent::components_array) {
-		i->FixedUpdate(FIXED_UPDATE_DELTA_TIME);
 	}
 }
 
@@ -89,29 +87,25 @@ void Game::ProcessPhysics()
 {
 	auto& c = Collider::colliders;  // Just an alias
 	auto& e = Entity::entities;
-
+	
 	for (int i = 0; i < c.size(); ++i) {
-		for (int j = 0; j < e.size(); ++j) {
-			if ((*c[i]) == e[j]->collider())
+			if (c[i] == &mario.collider())
 				continue;
 
+			sf::Vector2f direction;
+			if (c[i]->CheckCollision(mario.collider(), direction, 1.0f)) {
+				mario.OnCollision(direction);
+			}
+			//sf::Vector2f collisionInfo = c[i]->CheckCollision(mario.collider());
+			//sf::Vector2f collisionInfo = mario.collider().CheckCollision(*c[i]);
 
-			sf::Vector2f collisionInfo = e[j]->collider().CheckCollision(*c[i]);
-
-			if (!collisionInfo.x && !collisionInfo.y) {
+			if (!direction.x && !direction.y) {
 				continue;
 			}
 
-			e[j]->rect.left += collisionInfo.x;
-			e[j]->rect.top += collisionInfo.y;
-
-			// From Bottom
-			if (collisionInfo.y < 0) {
-				e[j]->is_on_ground = true;
-			}
 
 			// From Top
-			if (collisionInfo.y > 0 && collisionInfo.x == 0) {
+			if (direction.y > 0 && direction.x == 0) {
 				for (auto j = _bricks.begin(); j != _bricks.end(); ++j) {
 					if (&j->collider == c[i]) {
 						j->OnPlayerHit();
@@ -127,7 +121,6 @@ void Game::ProcessPhysics()
 			}
 
 			//std::cout << collisionInfo.x << ' ' << collisionInfo.y << '\n';
-		}
 		
 	}
 }
@@ -193,8 +186,8 @@ void Game::LoadLevel(int level)
 
 
 	// Entities...
-	auto goombasObjects = _lvl.GetObjects("Goombas");
+	/*auto goombasObjects = _lvl.GetObjects("Goombas");
 	for (auto& i : goombasObjects) {
 		_goombas.push_back(Goomba(i.rect.getPosition()));
-	}
+	}*/
 }

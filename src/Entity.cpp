@@ -27,7 +27,11 @@ Entity::~Entity() {
 	}
 }
 
-const Collider& Entity::collider()
+Collider& Entity::collider()
 {
 	return _collider;
+}
+
+void Entity::OnCollision(sf::Vector2f direction)
+{
 }
