@@ -9,7 +9,9 @@
 #include "Goomba.h"
 
 class Game {
-	sf::Vector2f _screen_size;
+	sf::Vector2f _windowResolution;
+	float _aspectRatio;
+	sf::Vector2f _gameResolution;
 	sf::RenderWindow _window;
 	sf::View _view;
 	LevelData _lvl;

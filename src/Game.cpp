@@ -2,14 +2,16 @@
 
 
 Game::Game() :
-	_screen_size(1200, 600),
-	_window(sf::VideoMode(_screen_size.x, _screen_size.y), "Mario Lite"),
+	_windowResolution(1300, 600),
+	_aspectRatio(_windowResolution.x / _windowResolution.y),
+	_gameResolution(_aspectRatio * 208, 208),
+	_window(sf::VideoMode(_windowResolution.x, _windowResolution.y), "Mario Lite"),
 	mario(100.0f),
-	_view(sf::FloatRect(0.0f, 0.0f, _screen_size.x, _screen_size.y))
+	_view(sf::FloatRect(0.0f, 0.0f, _gameResolution.x, _gameResolution.y))
 {
 	LoadLevel(0);
 
-	_view.setViewport(sf::FloatRect(0.0f, 0.0f, 2.0f, 2.0f));
+	_view.setViewport(sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f));
 
 #ifdef _DEBUG
 	std::cin.tie(0);
@@ -58,14 +60,21 @@ void Game::DrawColliders()
 
 void Game::ProcessEvents()
 {
-	static sf::Event evt;
+	static sf::Event e;
 
-	while (_window.pollEvent(evt))
+	while (_window.pollEvent(e))
 	{
-		switch (evt.type)
+		switch (e.type)
 		{
 		case sf::Event::Closed:
 			_window.close();
+			break;
+		case sf::Event::Resized:
+			_windowResolution.x = e.size.width;
+			_windowResolution.y = e.size.height;
+			_aspectRatio = _windowResolution.x / _windowResolution.y;
+			_gameResolution = { _aspectRatio * 208, 208 };
+			_view.setSize(sf::Vector2f(_gameResolution.x, _gameResolution.y));
 			break;
 		}
 	}
@@ -126,13 +135,10 @@ void Game::ProcessPhysics()
 }
 
 void Game::Render() {
-	float view_left_border = mario.rect.left + _screen_size.x / 4;
-	if (mario.rect.left < _screen_size.x / 4)
-		view_left_border = _screen_size.x / 2;
-	float view_top_border = mario.rect.top + _screen_size.y / 4;
-	if (mario.rect.top < _screen_size.y / 4)
-		view_top_border = _screen_size.y / 2;
-	_view.setCenter(view_left_border, view_top_border);
+	float view_left_border = mario.rect.left + _gameResolution.x / 4;
+	if (mario.rect.left < _gameResolution.x / 4)
+		view_left_border = _gameResolution.x / 2;
+	_view.setCenter(view_left_border, _gameResolution.y / 2);
 	_window.setView(_view);
 
 	_window.clear();
