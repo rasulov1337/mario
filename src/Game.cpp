@@ -11,7 +11,13 @@ Game::Game() :
 {
 	LoadLevel(0);
 
+
 	_view.setViewport(sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f));
+
+	if (!_gameMusic.openFromFile("assets/music/Main_Theme.wav"))
+		std::cout << "ERROR: MAIN THEME MUSIC FILE IS NOT LOADED!";
+	_gameMusic.setVolume(50);
+	_gameMusic.play();
 
 #ifdef _DEBUG
 	std::cin.tie(0);

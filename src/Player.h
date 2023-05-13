@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include <SFML/Audio.hpp>
 
 using namespace sf;
 
@@ -16,6 +17,10 @@ private:
     sf::Texture texture;
     double currentFrame;
     float _jumpHeight;
+
+    sf::Sound player_sound;
+    sf::SoundBuffer big_jump_buf;
+    sf::SoundBuffer small_jump_buf;
 
 
     void ProcessAnimation();

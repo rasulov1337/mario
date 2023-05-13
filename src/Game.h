@@ -36,6 +36,7 @@ class Game {
 	// Entities
 	std::vector<Goomba> _goombas;
 	
+	sf::Music _gameMusic;
 
 public:
 	explicit Game();

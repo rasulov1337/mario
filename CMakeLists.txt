@@ -45,7 +45,7 @@ set(${project}_SOURCE_LIST
 add_executable(${project} ${${project}_SOURCE_LIST})
 
 
-target_link_libraries(${project} PRIVATE sfml-graphics)
+target_link_libraries(${project} PRIVATE sfml-system sfml-audio sfml-graphics )
 target_compile_features(${project} PRIVATE cxx_std_17)
 if (WIN32 AND BUILD_SHARED_LIBS)
     add_custom_command(TARGET ${project} POST_BUILD
@@ -53,6 +53,5 @@ if (WIN32 AND BUILD_SHARED_LIBS)
 endif()
 
 file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
-
 
 install(TARGETS ${PROJECT_NAME})

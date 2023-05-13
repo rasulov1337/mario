@@ -1,4 +1,5 @@
 #include "Player.h"
+#include <iostream>
 
 Player::Player(float jumpHeight) :
     Entity({ 196, 140, 16, 16 }, 1, 100.0f),
@@ -18,6 +19,10 @@ Player::Player(float jumpHeight) :
     
     sprite.setTexture(_animation_textures[0]);
     sprite.scale(0.5, 0.5);
+    
+    if (!big_jump_buf.loadFromFile("assets/sounds/big_jump.wav"))
+        std::cout << "ERROR: BIG JUMP SOUND FILE IS NOT LOADED!";
+
 }
 
 void Player::Update(float dt) {
@@ -41,6 +46,9 @@ void Player::Update(float dt) {
         _velocity.x = 0;
     }
     if (is_on_ground && (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))) {
+        
+        player_sound.setBuffer(big_jump_buf);
+        player_sound.play();
         _velocity.y = -sqrtf(2.0f * 981.0f * _jumpHeight);
         is_on_ground = false;
     }
