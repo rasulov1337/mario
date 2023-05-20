@@ -2,7 +2,7 @@
 #include <iostream>
 
 Player::Player(float jumpHeight) :
-    Entity({ 196, 140, 16, 16 }, 1, 100.0f),
+    Entity({ 300, 140, 16, 16 }, 1, 100.0f),
     currentFrame(0),
     _jumpHeight(jumpHeight)
 {

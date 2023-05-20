@@ -15,6 +15,8 @@ class Game {
 	sf::RenderWindow _window;
 	sf::View _view;
 	LevelData _lvl;
+
+	float cameraCenterPos;
 	
 	void ProcessEvents();
 	void Update();
@@ -22,6 +24,7 @@ class Game {
 	void Render();
 
 	void LoadLevel(int level);
+	void OnDie();
 
 	// Debug
 	void InitDebug();

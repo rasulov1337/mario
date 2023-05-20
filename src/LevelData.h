@@ -38,6 +38,9 @@ public:
     sf::Vector2i GetTileSize();
     sf::Sprite GetTile(int id);
 
+    int GetMapWidth() const;
+    int GetMapHeight() const;
+
 private:
     int width, height, tileWidth, tileHeight;
     int firstTileID;

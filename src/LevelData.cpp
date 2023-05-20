@@ -270,6 +270,16 @@ sf::Sprite LevelData::GetTile(int id)
     return res;
 }
 
+int LevelData::GetMapWidth() const
+{
+    return tileWidth * width;
+}
+
+int LevelData::GetMapHeight() const
+{
+    return height * tileHeight;
+}
+
 void LevelData::Draw(sf::RenderWindow& window)
 {
     // Рисуем все тайлы (объекты НЕ рисуем!)

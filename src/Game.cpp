@@ -11,7 +11,7 @@ Game::Game() :
 {
 	LoadLevel(0);
 
-
+	cameraCenterPos = _gameResolution.x / 2;
 	_view.setViewport(sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f));
 
 	if (!_gameMusic.openFromFile("assets/music/Main_Theme.wav"))
@@ -134,17 +134,23 @@ void Game::ProcessPhysics()
 				}
 
 			}
+	}
 
-			//std::cout << collisionInfo.x << ' ' << collisionInfo.y << '\n';
-		
+	mario.rect.left = std::clamp(mario.rect.left, cameraCenterPos - _gameResolution.x / 2, static_cast<float>(_lvl.GetMapWidth()) - mario.rect.width);
+
+	if (mario.rect.top >= _lvl.GetMapHeight()) {
+		OnDie();
 	}
 }
 
 void Game::Render() {
-	float view_left_border = mario.rect.left + _gameResolution.x / 4;
-	if (mario.rect.left < _gameResolution.x / 4)
-		view_left_border = _gameResolution.x / 2;
-	_view.setCenter(view_left_border, _gameResolution.y / 2);
+	if (mario.rect.left > cameraCenterPos)
+		cameraCenterPos = mario.rect.left;
+	if (cameraCenterPos + _gameResolution.x / 2 > _lvl.GetMapWidth())
+		cameraCenterPos = _lvl.GetMapWidth() - _gameResolution.x / 2;
+	
+		
+	_view.setCenter(cameraCenterPos, _gameResolution.y / 2);
 	_window.setView(_view);
 
 	_window.clear();
@@ -170,9 +176,7 @@ void Game::Render() {
 void Game::LoadLevel(int level)
 {
 	_lvl.LoadFromFile("assets/map.tmx");
-	// HACK: FOR CORRECT PHYSICS FIRST INIT CREATURES THAN GROUND AND OTHERS
 
-	// Далее создаются физические объекты типа Ground, но это надо сделать получше! TODO!
 	std::vector<Object> block = _lvl.GetObjects("Ground");
 	for (int i = 0; i < block.size(); ++i) {
 		_staticColliders.push_back(StaticCollider(block[i].rect));
@@ -198,8 +202,14 @@ void Game::LoadLevel(int level)
 
 
 	// Entities...
-	/*auto goombasObjects = _lvl.GetObjects("Goombas");
+	auto goombasObjects = _lvl.GetObjects("Goombas");
 	for (auto& i : goombasObjects) {
 		_goombas.push_back(Goomba(i.rect.getPosition()));
-	}*/
+	}
+}
+
+void Game::OnDie()
+{
+	// Show die screen
+	// Reload
 }
