@@ -13,6 +13,8 @@ public:
 
     void Update(float dt) override;
     void OnCollision(sf::Vector2f direction) override;
+
+    void Die() override;
 private:
     sf::Texture texture;
     double currentFrame;

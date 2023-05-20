@@ -93,9 +93,14 @@ void Game::Update() {
 	if (dt > (1.0f / 60.0f)) {
 		dt = 1.0f / 60.0f;
 	}
+
+
 	for (auto& i : GameComponent::components_array) {
-		i->Update(dt);
+		if (!i->__delete)
+			i->Update(dt);
 	}
+
+
 }
 
 void Game::ProcessPhysics()
@@ -104,20 +109,17 @@ void Game::ProcessPhysics()
 	auto& e = Entity::entities;
 	
 	for (int i = 0; i < c.size(); ++i) {
-			if (c[i] == &mario.collider())
+		for (int j = 0; j < e.size(); ++j) {
+			if (c[i] == &e[j]->collider())
 				continue;
-
 			sf::Vector2f direction;
-			if (c[i]->CheckCollision(mario.collider(), direction, 1.0f)) {
-				mario.OnCollision(direction);
+			if (c[i]->CheckCollision(e[j]->collider(), direction, 1.0f)) {
+				e[j]->OnCollision(direction);
 			}
-			//sf::Vector2f collisionInfo = c[i]->CheckCollision(mario.collider());
-			//sf::Vector2f collisionInfo = mario.collider().CheckCollision(*c[i]);
 
 			if (!direction.x && !direction.y) {
 				continue;
 			}
-
 
 			// From Top
 			if (direction.y > 0 && direction.x == 0) {
@@ -134,6 +136,7 @@ void Game::ProcessPhysics()
 				}
 
 			}
+		}
 	}
 
 	mario.rect.left = std::clamp(mario.rect.left, cameraCenterPos - _gameResolution.x / 2, static_cast<float>(_lvl.GetMapWidth()) - mario.rect.width);

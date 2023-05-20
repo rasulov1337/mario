@@ -19,6 +19,7 @@ public:
 	sf::Sprite sprite;
 
 	virtual void OnCollision(sf::Vector2f direction);
+	virtual void Die() = 0;
 
 	static std::vector<Entity*> entities;
 
@@ -29,6 +30,7 @@ protected:
 	sf::Vector2f _velocity;
 
 	sf::Texture _texture;
+
 };
 
 #endif

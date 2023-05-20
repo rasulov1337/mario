@@ -22,7 +22,6 @@ Player::Player(float jumpHeight) :
     
     if (!big_jump_buf.loadFromFile("assets/sounds/big_jump.wav"))
         std::cout << "ERROR: BIG JUMP SOUND FILE IS NOT LOADED!";
-
 }
 
 void Player::Update(float dt) {
@@ -74,7 +73,10 @@ void Player::OnCollision(sf::Vector2f direction)
     else if (direction.y > 0) {
         _velocity.y = 0;
     }
+}
 
+void Player::Die()
+{
 
 }
 

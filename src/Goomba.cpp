@@ -1,7 +1,7 @@
 #include "Goomba.h"
 
 Goomba::Goomba(sf::Vector2f position) :
-    Entity({ 196, 140, 16, 16 }, 1, 1)
+    Entity({position.x, position.y - 10, 16, 16}, 1, 1)
 {
     _texture.loadFromFile("assets/enemy.png");
     sprite.setTexture(_texture);
@@ -32,10 +32,30 @@ void Goomba::Update(float dt)
     _velocity.x = -_moveSpeed;
 
     if (!is_on_ground)
-        _velocity.y += dt * 981.0f * _mass;
+        _velocity.y += dt * 981.0f;
 
     rect.left += _velocity.x * dt * 10;
     rect.top += _velocity.y * dt;
 
     sprite.setPosition(rect.left, rect.top);
+}
+
+void Goomba::OnCollision(sf::Vector2f direction)
+{
+    if (direction.y > 0) {
+        Die();
+    }
+    if (direction.x != 0.0f)
+        _moveSpeed = -_moveSpeed;
+
+    if (direction.y < 0) {
+        _velocity.y = 0;
+        is_on_ground = true;
+    }
+
+}
+
+void Goomba::Die()
+{
+    __delete = true;
 }

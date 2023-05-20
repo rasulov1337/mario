@@ -12,6 +12,9 @@ public:
 	Goomba& operator=(const Goomba& other);
 
 	void Update(float dt) override;
+	void OnCollision(sf::Vector2f direction) override;
+
+	virtual void Die() override;
 private:
 
 

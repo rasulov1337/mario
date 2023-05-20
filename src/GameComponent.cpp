@@ -2,7 +2,7 @@
 
 std::vector<GameComponent*> GameComponent::components_array{};
 
-GameComponent::GameComponent() {
+GameComponent::GameComponent(): __delete(0) {
 	GameComponent::components_array.push_back(this);
 }
 
