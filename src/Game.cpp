@@ -24,6 +24,10 @@ Game::Game() :
 		std::cout << "ERROR: BRICK SOUND FILE IS NOT LOADED!";
 	_brick_sound.setBuffer(_brick_sound_buf);
 
+	if (!_coin_sound_buf.loadFromFile("assets/sounds/coin.wav"))
+		std::cout << "ERROR: COIN SOUND FILE IS NOT LOADED!";
+	_coin_sound.setBuffer(_coin_sound_buf);
+
 #ifdef _DEBUG
 	std::cin.tie(0);
 	std::cout.tie(0);
@@ -137,6 +141,7 @@ void Game::ProcessPhysics()
 
 				for (auto j = _coins.begin(); j != _coins.end(); ++j) {
 					if (&j->collider == c[i]) {
+						_coin_sound.play();
 						j->OnPlayerHit();
 					}
 				}
