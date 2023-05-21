@@ -41,6 +41,9 @@ class Game {
 	
 	sf::Music _gameMusic;
 
+	sf::SoundBuffer _brick_sound_buf;
+	sf::Sound _brick_sound;
+
 public:
 	explicit Game();
 	int Run();

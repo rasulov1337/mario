@@ -18,6 +18,11 @@ Game::Game() :
 		std::cout << "ERROR: MAIN THEME MUSIC FILE IS NOT LOADED!";
 	_gameMusic.setVolume(50);
 	_gameMusic.play();
+	_gameMusic.setLoop(true);
+
+	if (!_brick_sound_buf.loadFromFile("assets/sounds/brick.wav"))
+		std::cout << "ERROR: BRICK SOUND FILE IS NOT LOADED!";
+	_brick_sound.setBuffer(_brick_sound_buf);
 
 #ifdef _DEBUG
 	std::cin.tie(0);
@@ -125,6 +130,7 @@ void Game::ProcessPhysics()
 			if (direction.y > 0 && direction.x == 0) {
 				for (auto j = _bricks.begin(); j != _bricks.end(); ++j) {
 					if (&j->collider == c[i]) {
+						_brick_sound.play();
 						j->OnPlayerHit();
 					}
 				}

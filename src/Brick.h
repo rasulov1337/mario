@@ -30,6 +30,7 @@ public:
 		rect = sf::FloatRect(spritePosition.x, spritePosition.y, textureRect.width, textureRect.height);
 	}
 
+	
 
 	void OnPlayerHit() {
 		sprite = sf::Sprite();
@@ -37,5 +38,7 @@ public:
 		std::cout << "Brick hit!\n";
 	}
 
+
+	
 
 };
