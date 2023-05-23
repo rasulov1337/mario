@@ -59,5 +59,11 @@ void Goomba::OnCollision(sf::Vector2f direction)
 
 void Goomba::Die()
 {
+    if (dead) {
+        return;
+    }
+
+    AudioManager::Play("goomba_death");
     __delete = true;
+    dead = true;
 }

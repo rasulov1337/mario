@@ -2,7 +2,7 @@
 #define GOOMBA_H
 
 #include "Entity.h"
-#include <SFML/Audio.hpp>
+#include "AudioManager.h"
 #include <iostream>
 
 class Goomba : public Entity {

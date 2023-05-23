@@ -13,6 +13,7 @@ FetchContent_MakeAvailable(SFML)
 
 set(${project}_HEADERS
         src/tinyxml2.h
+        src/AudioManager.h
         src/GameComponent.h
         src/Collider.h
         src/StaticCollider.h
@@ -27,6 +28,7 @@ set(${project}_HEADERS
 
 set(${project}_SOURCES
         src/GameComponent.cpp
+        src/AudioManager.cpp
         src/Entity.cpp
         src/Collider.cpp
         src/Goomba.cpp

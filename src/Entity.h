@@ -31,6 +31,8 @@ protected:
 
 	sf::Texture _texture;
 
+	bool dead;
+
 };
 
 #endif
