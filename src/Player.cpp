@@ -22,6 +22,7 @@ Player::Player(float jumpHeight) :
     
     if (!big_jump_buf.loadFromFile("assets/sounds/big_jump.wav"))
         std::cout << "ERROR: BIG JUMP SOUND FILE IS NOT LOADED!";
+    
 }
 
 void Player::Update(float dt) {

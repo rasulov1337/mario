@@ -2,6 +2,8 @@
 #define GOOMBA_H
 
 #include "Entity.h"
+#include <SFML/Audio.hpp>
+#include <iostream>
 
 class Goomba : public Entity {
 public:
@@ -13,6 +15,9 @@ public:
 
 	void Update(float dt) override;
 	void OnCollision(sf::Vector2f direction) override;
+
+	sf::Sound goomba_sound;
+	sf::SoundBuffer goomba_death_buf;
 
 	virtual void Die() override;
 private:

@@ -25,6 +25,7 @@ class Game {
 
 	void LoadLevel(int level);
 	void OnDie();
+	bool _gameOver;
 
 	// Debug
 	void InitDebug();
@@ -46,6 +47,9 @@ class Game {
 
 	sf::SoundBuffer _coin_sound_buf;
 	sf::Sound _coin_sound;
+
+	sf::Sound player_sound;
+	sf::SoundBuffer mario_death_buf;
 
 public:
 	explicit Game();

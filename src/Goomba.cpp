@@ -6,6 +6,8 @@ Goomba::Goomba(sf::Vector2f position) :
     _texture.loadFromFile("assets/enemy.png");
     sprite.setTexture(_texture);
     sprite.setPosition(position);
+    if (!goomba_death_buf.loadFromFile("assets/sounds/mario_death.wav"))
+        std::cout << "ERROR: GOOMBA DEATH SOUND FILE IS NOT LOADED!";
 }
 
 Goomba::Goomba(const Goomba& other) : Entity(other)

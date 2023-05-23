@@ -22,7 +22,6 @@ private:
 
     sf::Sound player_sound;
     sf::SoundBuffer big_jump_buf;
-    sf::SoundBuffer small_jump_buf;
 
 
     void ProcessAnimation();

@@ -7,7 +7,8 @@ Game::Game() :
 	_gameResolution(_aspectRatio * 208, 208),
 	_window(sf::VideoMode(_windowResolution.x, _windowResolution.y), "Mario Lite"),
 	mario(100.0f),
-	_view(sf::FloatRect(0.0f, 0.0f, _gameResolution.x, _gameResolution.y))
+	_view(sf::FloatRect(0.0f, 0.0f, _gameResolution.x, _gameResolution.y)),
+	_gameOver(false)
 {
 	LoadLevel(0);
 
@@ -27,6 +28,10 @@ Game::Game() :
 	if (!_coin_sound_buf.loadFromFile("assets/sounds/coin.wav"))
 		std::cout << "ERROR: COIN SOUND FILE IS NOT LOADED!";
 	_coin_sound.setBuffer(_coin_sound_buf);
+
+	if (!mario_death_buf.loadFromFile("assets/sounds/mario_death.wav"))
+		std::cout << "ERROR: MARIO DEATH SOUND FILE IS NOT LOADED!";
+	player_sound.setBuffer(mario_death_buf);
 
 #ifdef _DEBUG
 	std::cin.tie(0);
@@ -152,8 +157,9 @@ void Game::ProcessPhysics()
 
 	mario.rect.left = std::clamp(mario.rect.left, cameraCenterPos - _gameResolution.x / 2, static_cast<float>(_lvl.GetMapWidth()) - mario.rect.width);
 
-	if (mario.rect.top >= _lvl.GetMapHeight()) {
+	if (mario.rect.top >= _lvl.GetMapHeight() && !_gameOver) {
 		OnDie();
+		_gameOver = true;
 	}
 }
 
@@ -226,4 +232,6 @@ void Game::OnDie()
 {
 	// Show die screen
 	// Reload
+	_gameMusic.stop();
+	player_sound.play();
 }
