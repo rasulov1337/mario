@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <iostream>
+#include "AudioManager.h"
 
 Player::Player(float jumpHeight) :
     Entity({ 300, 140, 16, 16 }, 1, 100.0f),
@@ -12,9 +13,7 @@ Player::Player(float jumpHeight) :
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // Установите начальный прямоугольник текстуры
     sprite.scale(0.5, 0.5);
-
-    if (!big_jump_buf.loadFromFile("assets/sounds/big_jump.wav"))
-        std::cout << "ERROR: FAILED TO LOAD BIG JUMP SOUND FILE!";
+    
 }
 
 void Player::Update(float dt) {
@@ -37,8 +36,8 @@ void Player::Update(float dt) {
         _velocity.x = 0;
     }
     if (is_on_ground && (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))) {
-        player_sound.setBuffer(big_jump_buf);
-        player_sound.play();
+        
+        AudioManager::Play("big_jump");
         _velocity.y = -sqrtf(2.0f * 981.0f * _jumpHeight);
         is_on_ground = false;
     }

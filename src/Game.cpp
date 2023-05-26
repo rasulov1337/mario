@@ -21,17 +21,6 @@ Game::Game() :
 	_gameMusic.play();
 	_gameMusic.setLoop(true);
 
-	if (!_brick_sound_buf.loadFromFile("assets/sounds/brick.wav"))
-		std::cout << "ERROR: BRICK SOUND FILE IS NOT LOADED!";
-	_brick_sound.setBuffer(_brick_sound_buf);
-
-	if (!_coin_sound_buf.loadFromFile("assets/sounds/coin.wav"))
-		std::cout << "ERROR: COIN SOUND FILE IS NOT LOADED!";
-	_coin_sound.setBuffer(_coin_sound_buf);
-
-	if (!mario_death_buf.loadFromFile("assets/sounds/mario_death.wav"))
-		std::cout << "ERROR: MARIO DEATH SOUND FILE IS NOT LOADED!";
-	player_sound.setBuffer(mario_death_buf);
 
 #ifdef _DEBUG
 	std::cin.tie(0);
@@ -139,14 +128,14 @@ void Game::ProcessPhysics()
 			if (direction.y > 0 && direction.x == 0) {
 				for (auto j = _bricks.begin(); j != _bricks.end(); ++j) {
 					if (&j->collider == c[i]) {
-						_brick_sound.play();
+						AudioManager::Play("brick");
 						j->OnPlayerHit();
 					}
 				}
 
 				for (auto j = _coins.begin(); j != _coins.end(); ++j) {
 					if (&j->collider == c[i]) {
-						_coin_sound.play();
+						AudioManager::Play("coin");
 						j->OnPlayerHit();
 					}
 				}
@@ -233,5 +222,5 @@ void Game::OnDie()
 	// Show die screen
 	// Reload
 	_gameMusic.stop();
-	player_sound.play();
+	AudioManager::Play("mario_death");
 }

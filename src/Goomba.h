@@ -16,8 +16,6 @@ public:
 	void Update(float dt) override;
 	void OnCollision(sf::Vector2f direction) override;
 
-	sf::Sound goomba_sound;
-	sf::SoundBuffer goomba_death_buf;
 
 	virtual void Die() override;
 private:

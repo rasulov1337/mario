@@ -42,14 +42,7 @@ class Game {
 	
 	sf::Music _gameMusic;
 
-	sf::SoundBuffer _brick_sound_buf;
-	sf::Sound _brick_sound;
 
-	sf::SoundBuffer _coin_sound_buf;
-	sf::Sound _coin_sound;
-
-	sf::Sound player_sound;
-	sf::SoundBuffer mario_death_buf;
 
 public:
 	explicit Game();
