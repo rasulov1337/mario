@@ -92,6 +92,7 @@ void Goomba::Die()
     AudioManager::Play("goomba_death");
     __delete = true;
     dead = true;
+    _collider.disabled = true;
 
     sf::IntRect deathRect(64, 0, 32, 32);
     sprite.setTextureRect(deathRect);

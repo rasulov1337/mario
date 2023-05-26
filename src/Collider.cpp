@@ -4,12 +4,12 @@ std::vector<Collider*> Collider::colliders{};
 
 
 Collider::Collider(sf::FloatRect& rect)
-	: rect(rect)
+	: rect(rect), disabled(false)
 {
 	Collider::colliders.push_back(this);
 }
 
-Collider::Collider(const Collider& other) : rect(other.rect)
+Collider::Collider(const Collider& other) : rect(other.rect), disabled(other.disabled)
 {
 	if (this == &other)
 		return;

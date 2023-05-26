@@ -30,6 +30,8 @@ public:
 	sf::FloatRect& rect;
 	
 	static std::vector<Collider*> colliders;
+
+	bool disabled;
 };
 
 #endif

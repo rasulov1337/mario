@@ -35,6 +35,7 @@ public:
 	void OnPlayerHit() {
 		sprite = sf::Sprite();
 		rect = {0, 0, 0, 0};
+		collider.disabled = true;
 		std::cout << "Brick hit!\n";
 	}
 

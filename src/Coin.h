@@ -22,6 +22,7 @@ public:
 
 		std::cout << "Coin hit!\n";
 		_wasHit = true;
+		collider.disabled = true;
 	}
 
 private:

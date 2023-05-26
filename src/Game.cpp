@@ -155,7 +155,7 @@ void Game::ProcessPhysics()
 
 	for (int i = 0; i < c.size(); ++i) {
 		for (int j = 0; j < e.size(); ++j) {
-			if (c[i] == &e[j]->collider())
+			if (c[i]->disabled || c[i] == &e[j]->collider())
 				continue;
 			sf::Vector2f direction;
 			if (c[i]->CheckCollision(e[j]->collider(), direction, 1.0f)) {
