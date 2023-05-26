@@ -1,5 +1,6 @@
 #include "Game.h"
-
+#include <sstream>
+#include <iomanip>
 
 Game::Game() :
 	_windowResolution(1300, 600),
@@ -8,7 +9,9 @@ Game::Game() :
 	_window(sf::VideoMode(_windowResolution.x, _windowResolution.y), "Mario Lite"),
 	mario(100.0f),
 	_view(sf::FloatRect(0.0f, 0.0f, _gameResolution.x, _gameResolution.y)),
-	_gameOver(false)
+	_gameOver(false),
+	_score(0),
+	_timeLeft(300)
 {
 	LoadLevel(0);
 
@@ -20,6 +23,21 @@ Game::Game() :
 	_gameMusic.setVolume(50);
 	_gameMusic.play();
 	_gameMusic.setLoop(true);
+
+	if (!_font.loadFromFile("assets/Mario_font.ttf"))
+	{
+		std::cout << "ERROR: MARIO FONT FILE WASN'T LOADED!";
+	}
+	const_cast<sf::Texture&>(_font.getTexture(12)).setSmooth(false);
+	_text.setFont(_font);
+
+	std::string s = "Vodoprovodchick\tScore\tTime\nBETA\t\t\t\t 00000\t 000";
+	_text.setString(s);
+	_text.setCharacterSize(12);
+
+	sf::FloatRect textRect = _text.getLocalBounds();
+	_text.setOrigin(textRect.left + textRect.width / 2.0f,
+		textRect.top + textRect.height / 2.0f);
 
 
 #ifdef _DEBUG
@@ -93,6 +111,11 @@ void Game::Update() {
 	// Firstly, Update()
 	static sf::Clock clock;
 	float dt = clock.restart().asSeconds();
+	_timeLeft -= dt;
+
+	if (_timeLeft <= 0)
+		OnDie();
+
 	if (dt > (1.0f / 60.0f)) {
 		dt = 1.0f / 60.0f;
 	}
@@ -102,7 +125,7 @@ void Game::Update() {
 		if (!i->__delete)
 			i->Update(dt);
 	}
-
+	
 
 }
 
@@ -178,6 +201,17 @@ void Game::Render() {
 #ifdef _DEBUG
 	DrawColliders();
 #endif
+
+	std::stringstream ss;
+	ss << std::setfill('0') << std::setw(4) << _score;
+	std::string s = "Vodoprovodchick\tScore\tTime\nBETA\t\t\t\t " + ss.str() + '\t' + std::to_string(int(_timeLeft));
+	_text.setString(s);
+	_text.setCharacterSize(12);
+	
+	sf::FloatRect textRect = _text.getLocalBounds();
+
+	_text.setPosition(sf::Vector2f(cameraCenterPos, textRect.height / 2 + 1));
+	_window.draw(_text);
 
 	_window.display();
 }

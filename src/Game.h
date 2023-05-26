@@ -15,6 +15,8 @@ class Game {
 	sf::RenderWindow _window;
 	sf::View _view;
 	LevelData _lvl;
+	sf::Font _font;
+	sf::Text _text;
 
 	float cameraCenterPos;
 	
@@ -42,7 +44,8 @@ class Game {
 	
 	sf::Music _gameMusic;
 
-
+	int _score;
+	float _timeLeft;
 
 public:
 	explicit Game();
