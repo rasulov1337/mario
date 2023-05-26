@@ -125,7 +125,7 @@ void Game::Update() {
 		if (!i->__delete)
 			i->Update(dt);
 	}
-	
+
 
 }
 
@@ -133,7 +133,26 @@ void Game::ProcessPhysics()
 {
 	auto& c = Collider::colliders;  // Just an alias
 	auto& e = Entity::entities;
-	
+
+	for (auto k = _goombas.begin(); k != _goombas.end(); ++k) {
+		if (k->__delete) {
+			continue;
+		}
+		sf::Vector2f direction;
+		k->collider().CheckCollision(mario.collider(), direction, 1.0f);
+		if (!direction.x && !direction.y)
+			continue;
+		if (direction.y < 0) {
+			_score += 50;
+			k->Die();
+			break;
+		}
+		else if (direction.x != 0 && direction.y == 0) {
+			OnDie();
+			break;
+		}
+	}
+
 	for (int i = 0; i < c.size(); ++i) {
 		for (int j = 0; j < e.size(); ++j) {
 			if (c[i] == &e[j]->collider())
@@ -152,20 +171,24 @@ void Game::ProcessPhysics()
 				for (auto j = _bricks.begin(); j != _bricks.end(); ++j) {
 					if (&j->collider == c[i]) {
 						AudioManager::Play("brick");
+						_score += 50;
 						j->OnPlayerHit();
 					}
 				}
 
 				for (auto j = _coins.begin(); j != _coins.end(); ++j) {
-					if (&j->collider == c[i]) {
+					if (&j->collider == c[i] && !j->_wasHit) {
 						AudioManager::Play("coin");
+						_score += 200;
 						j->OnPlayerHit();
 					}
 				}
-
 			}
 		}
 	}
+
+	
+	
 
 	mario.rect.left = std::clamp(mario.rect.left, cameraCenterPos - _gameResolution.x / 2, static_cast<float>(_lvl.GetMapWidth()) - mario.rect.width);
 
@@ -180,8 +203,8 @@ void Game::Render() {
 		cameraCenterPos = mario.rect.left;
 	if (cameraCenterPos + _gameResolution.x / 2 > _lvl.GetMapWidth())
 		cameraCenterPos = _lvl.GetMapWidth() - _gameResolution.x / 2;
-	
-		
+
+
 	_view.setCenter(cameraCenterPos, _gameResolution.y / 2);
 	_window.setView(_view);
 
@@ -218,10 +241,10 @@ void Game::Render() {
 
 	std::stringstream ss;
 	ss << std::setfill('0') << std::setw(4) << _score;
-	std::string s = "Vodoprovodchick\tScore\tTime\nBETA\t\t\t\t " + ss.str() + '\t' + std::to_string(int(_timeLeft));
+	std::string s = "Vodoprovodchick\tScore\tTime\nBETA\t\t\t\t " + ss.str() + "\t " + std::to_string(int(_timeLeft));
 	_text.setString(s);
 	_text.setCharacterSize(12);
-	
+
 	sf::FloatRect textRect = _text.getLocalBounds();
 
 	_text.setPosition(sf::Vector2f(cameraCenterPos, textRect.height / 2 + 1));
@@ -267,12 +290,9 @@ void Game::LoadLevel(int level)
 
 void Game::OnDie()
 {
-	// Show die screen
-	// Reload
 	if (_gameOver)
 		return;
 	_gameOver = true;
 	_gameMusic.stop();
 	AudioManager::Play("mario_death");
-	
 }

@@ -8,6 +8,8 @@
 
 
 class Entity : public GameComponent {
+friend class Game;
+
 public:
 	explicit Entity(sf::FloatRect rect_, float mass, float moveSpeed);
 	explicit Entity(const Entity& other);
@@ -32,6 +34,7 @@ protected:
 	sf::Texture _texture;
 
 	bool dead;
+
 
 };
 

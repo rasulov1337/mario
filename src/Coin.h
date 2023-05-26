@@ -7,6 +7,7 @@
 
 
 class Coin {
+	friend class Game;
 public:
 	sf::Sprite sprite;
 	StaticCollider collider;
