@@ -187,6 +187,20 @@ void Game::Render() {
 
 	_window.clear();
 
+	if (_gameOver)
+	{
+		sf::FloatRect textRect = _text.getLocalBounds();
+		_window.clear(sf::Color(0, 0, 0));
+		_text.setString("GAME OVER");
+		_text.setOrigin(textRect.left + textRect.width / 2.0f,
+			textRect.top + textRect.height / 2.0f);
+		_text.setPosition(sf::Vector2f(cameraCenterPos, _gameResolution.y / 2));
+		_text.setCharacterSize(12);
+		_window.draw(_text);
+		_window.display();
+		return;
+	}
+
 	_lvl.Draw(_window);
 
 	for (auto& i : _bricks) {
@@ -255,6 +269,10 @@ void Game::OnDie()
 {
 	// Show die screen
 	// Reload
+	if (_gameOver)
+		return;
+	_gameOver = true;
 	_gameMusic.stop();
 	AudioManager::Play("mario_death");
+	
 }
