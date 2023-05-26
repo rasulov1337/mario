@@ -1,3 +1,5 @@
+
+
 #ifndef GOOMBA_H
 #define GOOMBA_H
 
@@ -19,7 +21,8 @@ public:
 
 	virtual void Die() override;
 private:
-
+	float timeElapsed;
+	int currentFrame;
 
 };
 
