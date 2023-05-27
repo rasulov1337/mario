@@ -2,7 +2,7 @@
 #include <sstream>
 #include <iomanip>
 
-#undef _DEBUG
+//#undef _DEBUG
 
 Game::Game() :
 	_windowResolution(1300, 600),
