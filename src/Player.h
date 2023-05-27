@@ -19,7 +19,7 @@ private:
     double currentFrame;
     float _jumpHeight;
 
-
+    bool _faceRight;
 
     void ProcessAnimation();
 };

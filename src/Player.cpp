@@ -5,7 +5,8 @@
 Player::Player(float jumpHeight) :
     Entity({ 300, 140, 16, 16 }, 1, 100.0f),
     currentFrame(0),
-    _jumpHeight(jumpHeight)
+    _jumpHeight(jumpHeight),
+    _faceRight(false)
 {
     if (!texture.loadFromFile("assets/mario.png"))
         std::cout << "ERROR: FAILED TO LOAD MARIO TEXTURE!";
@@ -13,7 +14,7 @@ Player::Player(float jumpHeight) :
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // Установите начальный прямоугольник текстуры
     sprite.scale(0.5, 0.5);
-    
+
 }
 
 void Player::Update(float dt) {
@@ -36,7 +37,7 @@ void Player::Update(float dt) {
         _velocity.x = 0;
     }
     if (is_on_ground && (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space))) {
-        
+
         AudioManager::Play("big_jump");
         _velocity.y = -sqrtf(2.0f * 981.0f * _jumpHeight);
         is_on_ground = false;
@@ -70,25 +71,29 @@ void Player::Die() {
 void Player::ProcessAnimation() {
     if (!is_on_ground) {
         if (_velocity.y > 0) {
-            sprite.setTextureRect(sf::IntRect(3 * 32, 0, 32, 32)); // Используйте текстуру анимации падения
+            sprite.setTextureRect(sf::IntRect(5 * 32, 0, 32, 32));
         }
         else {
-            sprite.setTextureRect(sf::IntRect(4 * 32, 0, 32, 32)); // Используйте текстуру анимации прыжка вверх
+            sprite.setTextureRect(sf::IntRect(4 * 32, 0, 32, 32));
         }
-        sprite.setScale((_velocity.x > 0) ? 0.5f : -0.5f, 0.5f);
-        sprite.setOrigin(sprite.getGlobalBounds().width / 2.f, sprite.getGlobalBounds().height / 2.f);
+        //sprite.setScale((_velocity.x > 0) ? 0.5f : -0.5f, 0.5f);
     }
     else {
         int direction = (_velocity.x > 0) ? 1 : ((_velocity.x < 0) ? -1 : 0);
+        if (direction > 0)
+            _faceRight = true;
+        else if (direction < 0)
+            _faceRight = false;
+
         if (direction == 0) {
-            sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // Используйте начальный кадр текстуры
-            sprite.setScale(0.5f, 0.5f);
+            sprite.setTextureRect(sf::IntRect(!_faceRight * 32, 0, _faceRight ? 32 : -32, 32));
         }
         else {
             int frameIndex = static_cast<int>(currentFrame) % 3 + 1;
-            sprite.setTextureRect(sf::IntRect(frameIndex * 32, 0, 32, 32)); // Используйте текстуру анимации
-            sprite.setScale(direction * 0.5f, 0.5f);
-            sprite.setOrigin((direction == 1) ? 0.f : sprite.getGlobalBounds().width, 0.f);
+            if (direction < 0) {
+                frameIndex++;
+            }
+            sprite.setTextureRect(sf::IntRect(frameIndex * 32, 0, direction * 32, 32));
         }
         currentFrame += 0.1;
         if (currentFrame > 6) {
