@@ -2,9 +2,7 @@
 
 using namespace sf;
 
-/// <summary>
-/// Класс игрока
-/// </summary>
+
 class Player : public Entity {
 public:
     sf::Texture _animation_textures[7];

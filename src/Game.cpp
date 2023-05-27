@@ -2,6 +2,8 @@
 #include <sstream>
 #include <iomanip>
 
+#undef _DEBUG
+
 Game::Game() :
 	_windowResolution(1300, 600),
 	_aspectRatio(_windowResolution.x / _windowResolution.y),
@@ -126,7 +128,9 @@ void Game::Update() {
 			i->Update(dt);
 	}
 
-
+	for (auto& i : _coins) {
+		i.Update(dt);
+	}
 }
 
 void Game::ProcessPhysics()
@@ -235,6 +239,10 @@ void Game::Render() {
 		_window.draw(i->sprite);
 	}
 
+	for (auto& i : _coins) {
+		_window.draw(i.sprite);
+	}
+
 #ifdef _DEBUG
 	DrawColliders();
 #endif
@@ -275,9 +283,8 @@ void Game::LoadLevel(int level)
 	}
 
 	auto coinObjects = _lvl.GetObjects("Coins");
-	auto coinSprite = sf::Sprite();
 	for (auto& i : coinObjects) {
-		_coins.push_back(Coin(coinSprite, i.rect));
+		_coins.push_back(Coin(i.rect));
 	}
 
 

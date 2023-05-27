@@ -12,7 +12,7 @@ Player::Player(float jumpHeight) :
         std::cout << "ERROR: FAILED TO LOAD MARIO TEXTURE!";
 
     sprite.setTexture(texture);
-    sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); // Установите начальный прямоугольник текстуры
+    sprite.setTextureRect(sf::IntRect(0, 0, 32, 32)); 
     sprite.scale(0.5, 0.5);
 
 }
@@ -76,7 +76,6 @@ void Player::ProcessAnimation() {
         else {
             sprite.setTextureRect(sf::IntRect(4 * 32, 0, 32, 32));
         }
-        //sprite.setScale((_velocity.x > 0) ? 0.5f : -0.5f, 0.5f);
     }
     else {
         int direction = (_velocity.x > 0) ? 1 : ((_velocity.x < 0) ? -1 : 0);
