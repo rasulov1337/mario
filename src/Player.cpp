@@ -2,13 +2,15 @@
 #include <iostream>
 #include "AudioManager.h"
 
+#include "ConfigVars.h"
+
 Player::Player(float jumpHeight) :
     Entity({ 300, 140, 16, 16 }, 1, 100.0f),
     currentFrame(0),
     _jumpHeight(jumpHeight),
     _faceRight(false)
 {
-    if (!texture.loadFromFile("assets/mario.png"))
+    if (!texture.loadFromFile(ASSETS_PATH + "/mario.png"))
         std::cout << "ERROR: FAILED TO LOAD MARIO TEXTURE!";
 
     sprite.setTexture(texture);

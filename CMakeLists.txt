@@ -12,6 +12,7 @@ FetchContent_MakeAvailable(SFML)
 
 
 set(${project}_HEADERS
+        src/ConfigVars.h
         src/tinyxml2.h
         src/AudioManager.h
         src/GameComponent.h

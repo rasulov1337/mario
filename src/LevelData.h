@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <map>
 #include <SFML/Graphics.hpp>
 
 
@@ -31,7 +30,7 @@ struct Layer
 class LevelData
 {
 public:
-    bool LoadFromFile(const char* filename);
+    bool LoadFromFile(const std::string filename);
     Object GetObject(std::string name);
     std::vector<Object> GetObjects(std::string name);
     void Draw(sf::RenderWindow& window);

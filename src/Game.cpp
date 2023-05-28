@@ -2,13 +2,11 @@
 #include <sstream>
 #include <iomanip>
 
-//#undef _DEBUG
-
 Game::Game() :
 	_windowResolution(1300, 600),
 	_aspectRatio(_windowResolution.x / _windowResolution.y),
 	_gameResolution(_aspectRatio * 208, 208),
-	_window(sf::VideoMode(_windowResolution.x, _windowResolution.y), "Mario Lite"),
+	_window(sf::VideoMode(_windowResolution.x, _windowResolution.y), GAME_TITLE),
 	mario(100.0f),
 	_view(sf::FloatRect(0.0f, 0.0f, _gameResolution.x, _gameResolution.y)),
 	_gameOver(false),
@@ -20,20 +18,20 @@ Game::Game() :
 	cameraCenterPos = _gameResolution.x / 2;
 	_view.setViewport(sf::FloatRect(0.0f, 0.0f, 1.0f, 1.0f));
 
-	if (!_gameMusic.openFromFile("assets/music/Main_Theme.wav"))
-		std::cout << "ERROR: MAIN THEME MUSIC FILE IS NOT LOADED!";
+	if (!_gameMusic.openFromFile(GAME_MUSIC_PATH))
+		std::cerr << "ERROR: MAIN THEME MUSIC FILE IS NOT LOADED!";
 	_gameMusic.setVolume(50);
 	_gameMusic.play();
 	_gameMusic.setLoop(true);
 
-	if (!_font.loadFromFile("assets/Mario_font.ttf"))
+	if (!_font.loadFromFile(FONT_PATH))
 	{
-		std::cout << "ERROR: MARIO FONT FILE WASN'T LOADED!";
+		std::cerr << "ERROR: MARIO FONT FILE WASN'T LOADED!";
 	}
 	const_cast<sf::Texture&>(_font.getTexture(12)).setSmooth(false);
 	_text.setFont(_font);
 
-	std::string s = "Vodoprovodchick\tScore\tTime\nBETA\t\t\t\t 00000\t 000";
+	std::string s = GAME_TITLE + "\tScore\tTime\nBETA\t\t\t\t 00000\t 000";
 	_text.setString(s);
 	_text.setCharacterSize(12);
 
@@ -174,7 +172,7 @@ void Game::ProcessPhysics()
 			if (direction.y > 0 && direction.x == 0) {
 				for (auto j = _bricks.begin(); j != _bricks.end(); ++j) {
 					if (&j->collider == c[i]) {
-						AudioManager::Play("brick");
+						AudioManager::Play(BRICK_HITSOUND_NAME);
 						_score += 50;
 						j->OnPlayerHit();
 					}
@@ -182,7 +180,7 @@ void Game::ProcessPhysics()
 
 				for (auto j = _coins.begin(); j != _coins.end(); ++j) {
 					if (&j->collider == c[i] && !j->_wasHit) {
-						AudioManager::Play("coin");
+						AudioManager::Play(COIN_HITSOUND_NAME);
 						_score += 200;
 						j->OnPlayerHit();
 					}
@@ -249,7 +247,7 @@ void Game::Render() {
 
 	std::stringstream ss;
 	ss << std::setfill('0') << std::setw(4) << _score;
-	std::string s = "Vodoprovodchick\tScore\tTime\nBETA\t\t\t\t " + ss.str() + "\t " + std::to_string(int(_timeLeft));
+	std::string s = GAME_TITLE + "\tScore\tTime\nBETA\t\t\t\t " + ss.str() + "\t " + std::to_string(int(_timeLeft));
 	_text.setString(s);
 	_text.setCharacterSize(12);
 
@@ -263,7 +261,7 @@ void Game::Render() {
 
 void Game::LoadLevel(int level)
 {
-	_lvl.LoadFromFile("assets/map.tmx");
+	_lvl.LoadFromFile(MAP_PATH + std::to_string(level) + ".tmx");
 
 	std::vector<Object> block = _lvl.GetObjects("Ground");
 	for (int i = 0; i < block.size(); ++i) {
@@ -301,5 +299,5 @@ void Game::OnDie()
 		return;
 	_gameOver = true;
 	_gameMusic.stop();
-	AudioManager::Play("mario_death");
+	AudioManager::Play(MARIO_DEATH_SOUND_NAME);
 }

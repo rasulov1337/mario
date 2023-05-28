@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Collider.h"
 
+#include "ConfigVars.h"
 
 
 class Brick {
@@ -30,16 +31,12 @@ public:
 		rect = sf::FloatRect(spritePosition.x, spritePosition.y, textureRect.width, textureRect.height);
 	}
 
-	
-
 	void OnPlayerHit() {
 		sprite = sf::Sprite();
 		rect = {0, 0, 0, 0};
 		collider.disabled = true;
+#ifdef _DEBUG
 		std::cout << "Brick hit!\n";
+#endif
 	}
-
-
-	
-
 };

@@ -1,5 +1,7 @@
 #include "AudioManager.h"
 
+#include "ConfigVars.h"
+
 void AudioManager::Play(std::string filename)
 {
 	if (_sounds.count(filename)) {
@@ -11,7 +13,7 @@ void AudioManager::Play(std::string filename)
 	sf::SoundBuffer buff;
 
 
-	if (!buff.loadFromFile("assets/sounds/" + filename + ".wav")) {
+	if (!buff.loadFromFile(SOUNDS_PATH + filename + ".wav")) {
 		std::cerr << "ERROR: " + filename + " FILE CAN'T LOADED!";
 		return;
 	}

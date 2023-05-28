@@ -1,12 +1,13 @@
-
 #include "Goomba.h"
+
+#include "ConfigVars.h"
 
 Goomba::Goomba(sf::Vector2f position) :
     Entity({ position.x, position.y - 10, 16, 16 }, 1, 1),
     currentFrame(0),
     timeElapsed(0)
 {
-    _texture.loadFromFile("assets/enemy.png");
+    _texture.loadFromFile(GOOMBA_SPRITE_PATH);
 
     sprite.setTexture(_texture);
     sprite.setScale(0.5, 0.5);
@@ -42,8 +43,7 @@ void Goomba::Update(float dt)
 {
     _velocity.x = -_moveSpeed;
 
-    if (!is_on_ground)
-        _velocity.y += dt * 981.0f;
+    _velocity.y += dt * 981.0f;
 
     rect.left += _velocity.x * dt * 10;
     rect.top += _velocity.y * dt;
@@ -89,7 +89,7 @@ void Goomba::Die()
         return;
     }
 
-    AudioManager::Play("goomba_death");
+    AudioManager::Play(GOOMBA_DEATH_SOUND_NAME);
     __delete = true;
     dead = true;
     _collider.disabled = true;

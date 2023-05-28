@@ -1,4 +1,5 @@
 #include "LevelData.h"
+#include "ConfigVars.h"
 
 #include <iostream>
 #include "tinyxml2.h"
@@ -21,10 +22,10 @@ std::string Object::GetPropertyString(std::string name)
 }
 
 
- bool LevelData::LoadFromFile(const char* filename) {
+ bool LevelData::LoadFromFile(const std::string filename) {
     XMLDocument levelFile;
 
-    int errorCode = levelFile.LoadFile(filename);
+    int errorCode = levelFile.LoadFile(filename.c_str());
     if (errorCode != XML_SUCCESS) {
         std::cerr << "Error! Couldn't open the map file! Error code: " << errorCode << std::endl;
         exit(-1);
@@ -43,7 +44,7 @@ std::string Object::GetPropertyString(std::string name)
 
     // source - путь до картинки в контейнере image
     XMLElement* tilesetImageElement = tilesetElement->FirstChildElement("image");
-    std::string imagepath = "assets/" + std::string(tilesetImageElement->Attribute("source"));
+    std::string imagepath = SPRITES_PATH + std::string(tilesetImageElement->Attribute("source"));
 
     // ѕытаемс€ загрузить тайлсет
     sf::Image img;
